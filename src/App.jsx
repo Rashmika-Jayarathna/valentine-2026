@@ -12,17 +12,19 @@ const ValentinePage = () => {
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [showHeartExplosion, setShowHeartExplosion] = useState(false);
+  const [showNameReveal, setShowNameReveal] = useState(false);
   const audioRef = useRef(null);
   
   const yesButtonSize = Math.min(noCount * 20 + 16, 60);
 
-  // Love letters that appear one by one after "Yes"
+  // Personalized love letters with nicknames
   const loveLetters = [
-    "You make every day brighter! ✨",
-    "Your smile is my favorite thing 😊",
-    "I'm so lucky to have you 🍀",
-    "You're my best friend and so much more 💑",
-    "Thank you for being you! 💝"
+    "Dear Sudu Manika, you make every day brighter! ✨",
+    "Your smile is my favorite thing in the world, Sudu Nona 😊",
+    "I'm so lucky to have you in my life, Chalani 🍀",
+    "You're not just my Valentine, you're my everything, Sudu Manika 💑",
+    "Thank you for being the amazing person you are, Sudu Nona! 💝",
+    "With all my love, Your Sudu Mahaththaya ❤️"
   ];
 
   // Different GIFs for different stages
@@ -49,6 +51,12 @@ const ValentinePage = () => {
   const getEmoji = () => {
     const emojis = ['🥺', '😢', '😭', '💔', '🥹', '😿', '🙏', '😩', '🥲', '😔'];
     return emojis[Math.min(noCount, emojis.length - 1)];
+  };
+
+  // Get random nickname for variety
+  const getRandomNickname = () => {
+    const nicknames = ["Sudu Manika", "Sudu Nona", "Chalani"];
+    return nicknames[Math.floor(Math.random() * nicknames.length)];
   };
 
   // Track mouse position for interactive effects
@@ -78,7 +86,7 @@ const ValentinePage = () => {
 
   // Intro sequence
   useEffect(() => {
-    const timer = setTimeout(() => setShowIntro(false), 3000);
+    const timer = setTimeout(() => setShowIntro(false), 4000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -91,6 +99,15 @@ const ValentinePage = () => {
       return () => clearTimeout(timer);
     }
   }, [showLoveLetters, currentLetterIndex]);
+
+  // Name reveal animation
+  useEffect(() => {
+    if (yesPressed) {
+      setTimeout(() => {
+        setShowNameReveal(true);
+      }, 1000);
+    }
+  }, [yesPressed]);
 
   const getRandomPosition = () => {
     const viewportWidth = window.innerWidth;
@@ -128,20 +145,20 @@ const ValentinePage = () => {
   const getNoButtonText = () => {
     const phrases = [
       "No", 
-      "Are you sure?", 
-      "Really sure??", 
-      "Think again!",
-      "Last chance!", 
-      "Surely not?", 
-      "You might regret this!",
-      "Give it another thought!", 
+      "Are you sure, Sudu Nona?", 
+      "Really sure, Sudu Manika??", 
+      "Think again, please!",
+      "Chalani... last chance!", 
+      "Surely not, Sudu Nona?", 
+      "You might regret this, Sudu Manika!",
+      "Give it another thought, Chalani!", 
       "Are you absolutely sure?",
-      "You're breaking my heart 💔",
-      "Please reconsider 🥺",
-      "I'm not giving up! 💪",
-      "One more chance? 🙏",
-      "Pretty please? 🥹",
-      "Still no?? 😢"
+      "You're breaking my heart, Sudu Nona 💔",
+      "Please reconsider, Sudu Manika 🥺",
+      "I'm not giving up, Chalani! 💪",
+      "One more chance, Sudu Nona? 🙏",
+      "Pretty please, Sudu Manika? 🥹",
+      "Still no, Chalani?? 😢"
     ];
     return phrases[Math.min(noCount, phrases.length - 1)];
   };
@@ -190,13 +207,13 @@ const ValentinePage = () => {
     // Show love letters after a delay
     setTimeout(() => {
       setShowLoveLetters(true);
-    }, 2000);
+    }, 3000);
   };
 
-  // Intro Animation with typing effect
+  // Intro Animation with personalized message
   if (showIntro) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-rose-400 via-pink-300 to-rose-200">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-rose-400 via-pink-300 to-rose-200 px-4">
         <motion.div
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
@@ -209,9 +226,25 @@ const ValentinePage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="text-2xl text-white font-serif"
+          className="text-3xl text-white font-serif mb-2 text-center"
         >
-          I have something to ask you...
+          Hey Sudu Manika,
+        </motion.p>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2 }}
+          className="text-2xl text-white/90 font-serif text-center"
+        >
+          My dearest Sudu Nona...
+        </motion.p>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 2 }}
+          className="text-xl text-white/80 font-serif text-center mt-2"
+        >
+          I have something special to ask you...
         </motion.p>
       </div>
     );
@@ -270,6 +303,26 @@ const ValentinePage = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* Names floating animation */}
+        {showNameReveal && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: "spring", duration: 1 }}
+            className="absolute top-20 z-20 px-4"
+          >
+            <div className="bg-white/90 backdrop-blur px-8 py-4 rounded-full shadow-2xl border-4 border-rose-300">
+              <motion.p
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="text-2xl sm:text-3xl font-bold text-rose-600 font-serif"
+              >
+                Sudu Mahaththaya 💕 Sudu Manika
+              </motion.p>
+            </div>
+          </motion.div>
+        )}
 
         <motion.div
           initial={{ scale: 0, rotate: -180 }}
@@ -349,9 +402,9 @@ const ValentinePage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="text-4xl text-rose-500 font-medium mb-2"
+            className="text-3xl sm:text-4xl text-rose-500 font-medium mb-2"
           >
-            I knew you'd say yes!
+            I knew you'd say yes, Sudu Nona!
           </motion.p>
           <motion.p
             initial={{ opacity: 0 }}
@@ -387,10 +440,13 @@ const ValentinePage = () => {
               initial={{ scale: 0, y: 50 }}
               animate={{ scale: 1, y: 0 }}
               transition={{ type: "spring", delay: 0.5 }}
-              className="mt-8 p-6 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-3xl shadow-2xl max-w-md mx-auto"
+              className="mt-8 p-8 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-3xl shadow-2xl max-w-md mx-auto"
             >
-              <p className="text-2xl font-bold font-serif">
-                You're the best Valentine ever! 💖✨
+              <p className="text-2xl sm:text-3xl font-bold font-serif mb-3">
+                You're the best Valentine ever, Sudu Manika! 💖✨
+              </p>
+              <p className="text-xl font-serif italic">
+                Forever yours, Your Sudu Mahaththaya 💝
               </p>
             </motion.div>
           )}
@@ -459,6 +515,17 @@ const ValentinePage = () => {
         </motion.div>
       )}
 
+      {/* Personalized header */}
+      <motion.div
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="absolute top-8 bg-white/80 backdrop-blur px-6 py-3 rounded-full shadow-lg"
+      >
+        <p className="text-rose-600 font-serif text-base sm:text-lg">
+          From: Sudu Mahaththaya 💝 To: Sudu Nona
+        </p>
+      </motion.div>
+
       {/* Main content */}
       <div className="relative z-10">
         <AnimatePresence mode="wait">
@@ -517,18 +584,18 @@ const ValentinePage = () => {
             repeat: Infinity,
             ease: "easeInOut"
           }}
-          className="text-5xl font-bold text-rose-600 mb-4 font-serif text-center"
+          className="text-4xl sm:text-5xl font-bold text-rose-600 mb-4 font-serif text-center px-4"
         >
-          Will you be my Valentine? 💖
+          Sudu Manika, will you be my Valentine? 💖
         </motion.h1>
         
         {noCount > 0 && (
           <motion.p
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-rose-400 text-center mb-8 text-lg italic"
+            className="text-rose-400 text-center mb-8 text-lg italic px-4"
           >
-            {noCount >= 7 ? "The 'Yes' button is getting bigger... just saying 👀" : "Please? 🥺"}
+            {noCount >= 7 ? "The 'Yes' button is getting bigger... just saying 👀" : "Please, Sudu Nona? 🥺"}
           </motion.p>
         )}
         
@@ -592,9 +659,9 @@ const ValentinePage = () => {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-rose-500 text-center mt-6 text-xl font-bold"
+            className="text-rose-500 text-center mt-6 text-xl font-bold px-4"
           >
-            I'm still here waiting... 🥺💕
+            Your Sudu Mahaththaya is still here waiting, Sudu Manika... 🥺💕
           </motion.p>
         )}
 
